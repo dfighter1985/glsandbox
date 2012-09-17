@@ -15,6 +15,7 @@
 #include <GL/glut.h>
 
 #include "VertexBuffer.h"
+#include "ShaderManager.h"
 
 
 GLfloat vertices[] =
@@ -24,6 +25,7 @@ GLfloat vertices[] =
 	0.0f, 1.0f, 0.0f
 };
 
+ShaderManager shaderManager;
 
 ExampleApplication::ExampleApplication()
 {
@@ -42,6 +44,9 @@ void ExampleApplication::setup()
 	glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
 	vbo = new VertexBuffer();
 	vbo->buffer( 9, vertices, NULL, NULL );
+
+	shaderManager.loadShaderFiles( "red", "shaders/red.vp", "shaders/red.fp" );
+	shaderManager.useProgram( "red" );
 }
 
 void ExampleApplication::onResizeWindow( int w, int h )
