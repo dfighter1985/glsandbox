@@ -7,8 +7,8 @@ public:
 	VertexBuffer();
 	~VertexBuffer();
 
-	void buffer( unsigned long n, void *vertices, void *texCoords, void *normals );
-	void draw();
+	void buffer( unsigned long nVertices, void *vertices, void *texCoords, void *normals );
+	void draw( unsigned int primitive = 0 );
 
 private:
 	bool vBuffered;

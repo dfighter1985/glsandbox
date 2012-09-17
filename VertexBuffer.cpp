@@ -69,8 +69,11 @@ void VertexBuffer::buffer( unsigned long nVertices, void *vertices, void *texCoo
 	size = nVertices;
 }
 
-void VertexBuffer::draw()
+void VertexBuffer::draw( unsigned int primitive )
 {
+	if( primitive == 0 )
+		primitive = GL_TRIANGLES;
+
 	if( !vBuffered && !tBuffered && !nBuffered )
 		assert( false );
 
@@ -95,7 +98,7 @@ void VertexBuffer::draw()
 		glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
 	}
 
-	glDrawArrays( GL_TRIANGLES, 0, size / 3 );
+	glDrawArrays( primitive, 0, size );
 
 	glDisableVertexAttribArray( 0 );
 	glDisableVertexAttribArray( 1 );

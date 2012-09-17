@@ -20,9 +20,10 @@
 
 GLfloat vertices[] =
 {
-	-1.0f, -1.0f, 0.0f,
-	1.0f, -1.0f, 0.0f,
-	0.0f, 1.0f, 0.0f
+	-0.5f, -0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+	0.5f, 0.5f, 0.0f,
+	-0.5f, 0.5f, 0.0f
 };
 
 ShaderManager shaderManager;
@@ -43,7 +44,7 @@ void ExampleApplication::setup()
 	glEnable( GL_DEPTH_TEST );
 	glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
 	vbo = new VertexBuffer();
-	vbo->buffer( 9, vertices, NULL, NULL );
+	vbo->buffer( 4, vertices, NULL, NULL );
 
 	shaderManager.loadShaderFiles( "red", "shaders/red.vp", "shaders/red.fp" );
 	shaderManager.useProgram( "red" );
@@ -57,7 +58,7 @@ void ExampleApplication::onResizeWindow( int w, int h )
 void ExampleApplication::render()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	vbo->draw();
+	vbo->draw( GL_TRIANGLE_FAN );
 	glutSwapBuffers();
 }
 
