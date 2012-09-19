@@ -44,6 +44,14 @@ public:
 		initFromArray( other.getAsArray() );
 	}
 
+	void setColumn( int column, float *v )
+	{
+		if( column > 3 )
+			return;
+		for( int i = column*4; i < column*4+4; i++ )
+			m[ i ] = v[ i - column*4 ];
+	}
+
 	void add( const Matrix44& other )
 	{
 		const float *f = other.getAsArray();

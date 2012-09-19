@@ -3,17 +3,17 @@
 
 #include <cmath>
 
-class Vector3D
+class Vector3
 {
 public:
-	Vector3D( float x = 0.0f, float y = 0.0f, float z = 0.0f )
+	Vector3( float x = 0.0f, float y = 0.0f, float z = 0.0f )
 	{
 		xyz[ 0 ] = x;
 		xyz[ 1 ] = y;
 		xyz[ 2 ] = z;
 	}
 
-	~Vector3D()
+	~Vector3()
 	{
 	}
 
@@ -40,26 +40,49 @@ public:
 			xyz[ i ] = a[ i ];
 	}
 
-	void add( const Vector3D &other )
+	void add( const Vector3 &other )
 	{
 		const float *f = other.getAsArray();
 		for( int i = 0; i < 3; i++ )
 			xyz[ i ] += f[ i ];
 	}
 
-	void sub( const Vector3D &other )
+	void sub( const Vector3 &other )
 	{
 		const float *f = other.getAsArray();
 		for( int i = 0; i < 3; i ++ )
 			xyz[ i ] -= f[ i ];
 	}
 
-	float dot( const Vector3D &other )
+	void mul( float scalar )
+	{
+		for( int i = 0; i < 3; i++ )
+			xyz[ i ] *= scalar;
+	}
+
+	float dot( const Vector3 &other )
 	{
 		float result = 0.0f;
 		const float *f = other.getAsArray();
 		for( int i = 0; i < 3; i++ )
 			result += ( xyz[ i ] * f[ i ] );
+		
+		return result;
+	}
+
+	// Vector cross product A x B
+	// this vector is B
+	// other is A
+	Vector3 cross( const Vector3 &other )
+	{
+		const float *A = other.getAsArray();
+		const float *B = getAsArray();
+
+		float i = A[ 1 ] * B[ 2 ] - B[ 1 ] * A[ 2 ];
+		float j = A[ 0 ] * B[ 2 ] - B[ 0 ] * A[ 2 ];
+		float k = A[ 0 ] * B[ 1 ] - B[ 0 ] * A[ 1 ];
+
+		return Vector3( i, j, k );
 	}
 
 private:
