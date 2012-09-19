@@ -20,6 +20,7 @@
 
 ShaderManager::ShaderManager()
 {
+	currentProgramId = 0;
 }
 
 ShaderManager::~ShaderManager()
@@ -129,6 +130,7 @@ bool ShaderManager::loadShaders( const char *programName, const char *vertexProg
 	}
 
 	shaders[ programName ] = pId;
+	currentProgramId = pId;
 
 	return true;
 }

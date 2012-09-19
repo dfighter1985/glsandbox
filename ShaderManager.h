@@ -15,8 +15,10 @@ public:
 	bool loadShaderFile( const char *fileName, std::string &src );
 	bool loadShaderFiles( const char *programName, const char *vertexProgramFile, const char *fragmentProgramFile );
 	bool useProgram( const char *programName );
+	unsigned int getCurrentProgramId() const{ return currentProgramId; }
 
 private:
+	unsigned int currentProgramId;
 	std::tr1::unordered_map< std::string, unsigned int > shaders;
 };
 
