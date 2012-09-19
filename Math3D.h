@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix44.h"
+#include "MatrixStack.h"
 
 inline Vector4 toVector4( const Vector3 &v )
 {

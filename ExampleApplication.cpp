@@ -29,7 +29,7 @@ GLfloat vertices[] =
 };
 
 ShaderManager shaderManager;
-Matrix44 mvp;
+MatrixStack stack;
 
 ExampleApplication::ExampleApplication()
 {
@@ -47,15 +47,17 @@ void ExampleApplication::setup()
 	glEnable( GL_DEPTH_TEST );
 	glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
 	
-	mvp.loadIdentity();
-	static float f[] = { 0.4f, 0.4f, 0.0f, 1.0f };
-	mvp.setColumn( 3, f );
-
 	vbo = new VertexBuffer();
 	vbo->buffer( 4, vertices, NULL, NULL );
 
 	shaderManager.loadShaderFiles( "red", "shaders/red_trans.vp", "shaders/red.fp" );
 	shaderManager.useProgram( "red" );
+
+	stack.loadIdentity();
+	stack.scale( 0.5f, 0.5f, 0.5f );
+	stack.rotate( 30, 0.0f, 0.0f, 1.0f );
+	stack.translate( 0.5f, 0.5f, 0.0f );
+
 }
 
 void ExampleApplication::onResizeWindow( int w, int h )
@@ -70,7 +72,7 @@ void ExampleApplication::render()
 	GLint mvpLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "mvp" );
 	if( mvpLocation == -1 )
 		assert( false );
-	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, mvp.getAsArray() );
+	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, stack.top().getAsArray() );
 
 	vbo->draw( GL_TRIANGLE_FAN );
 	glutSwapBuffers();

@@ -76,9 +76,8 @@ public:
 	// This matrix is B
 	// other is A
 	// result is C, which is loaded back into B
-	void mul( const Matrix44 &other )
+	void mul( const float *A )
 	{
-		const float *A = other.getAsArray();
 		const float *B = getAsArray();
 		float C[ 16 ];
 		int l = 0;
@@ -96,6 +95,11 @@ public:
 
 
 		initFromArray( C );
+	}
+
+	void mul( const Matrix44 &other )
+	{
+		mul( other.getAsArray() );
 	}
 
 private:
