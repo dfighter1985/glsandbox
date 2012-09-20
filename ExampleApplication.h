@@ -12,10 +12,12 @@ public:
 	~ExampleApplication();
 	void setup();
 	void onResizeWindow( int w, int h );
+	void onKeyDown( unsigned char key, int mouseX, int mouseY );
 	void render();
 
 private:
 	VertexBuffer *vbo;
+	float z;
 };
 
 #endif

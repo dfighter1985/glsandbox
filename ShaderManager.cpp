@@ -6,8 +6,8 @@
 #define GLEW_STATIC
 #endif
 
-#include <gl\glew.h>
-#include <gl\gl.h>		
+#include <gl/glew.h>
+#include <gl/gl.h>		
 
 #ifndef FREEGLUT_STATIC
 #define FREEGLUT_STATIC

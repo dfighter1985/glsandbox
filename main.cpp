@@ -4,8 +4,8 @@
 #define GLEW_STATIC
 #endif
 
-#include <gl\glew.h>
-#include <gl\gl.h>		
+#include <gl/glew.h>
+#include <gl/gl.h>		
 
 #ifndef FREEGLUT_STATIC
 #define FREEGLUT_STATIC
@@ -18,12 +18,17 @@
 
 ExampleApplication app;
 
-void ChangeSize( int w, int h )
+void onResizeWindow( int w, int h )
 {
 	app.onResizeWindow( w, h );
 }
 
-void RenderScene()
+void onKeyDown( unsigned char k, int mouseX, int mouseY )
+{
+	app.onKeyDown( k, mouseX, mouseY );
+}
+
+void onRenderScene()
 {
 	app.render();
 }
@@ -35,8 +40,9 @@ int main( int argc, char **argv )
 	glutInitWindowSize( 800, 600 );
 	glutCreateWindow( "Example GLUT Application" );
 
-	glutReshapeFunc( ChangeSize );
-	glutDisplayFunc( RenderScene );
+	glutReshapeFunc( onResizeWindow );
+	glutDisplayFunc( onRenderScene );
+	glutKeyboardFunc( onKeyDown );
 
 	GLenum err = glewInit();
 	if( GLEW_OK != err )

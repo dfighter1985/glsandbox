@@ -6,8 +6,8 @@
 #define GLEW_STATIC
 #endif
 
-#include <gl\glew.h>
-#include <gl\gl.h>		
+#include <gl/glew.h>
+#include <gl/gl.h>		
 
 #ifndef FREEGLUT_STATIC
 #define FREEGLUT_STATIC
@@ -18,6 +18,8 @@
 #include "VertexBuffer.h"
 #include "ShaderManager.h"
 #include "Math3D.h"
+#include "Frustum.h"
+#include "TransformPipeline.h"
 
 
 GLfloat vertices[] =
@@ -29,11 +31,14 @@ GLfloat vertices[] =
 };
 
 ShaderManager shaderManager;
-MatrixStack stack;
+MatrixStack mv;
+Frustum p;
+TransformPipeline pipeline;
 
 ExampleApplication::ExampleApplication()
 {
 	vbo = NULL;
+	z = 0.0f;
 }
 
 ExampleApplication::~ExampleApplication()
@@ -53,28 +58,49 @@ void ExampleApplication::setup()
 	shaderManager.loadShaderFiles( "red", "shaders/red_trans.vp", "shaders/red.fp" );
 	shaderManager.useProgram( "red" );
 
-	stack.loadIdentity();
-	stack.scale( 0.5f, 0.5f, 0.5f );
-	stack.rotate( 30, 0.0f, 0.0f, 1.0f );
-	stack.translate( 0.5f, 0.5f, 0.0f );
+	mv.loadIdentity();
+	mv.translate( 0.0f, 0.0f, -0.5f );
 
+	pipeline.setup( &mv, &p );
 }
 
 void ExampleApplication::onResizeWindow( int w, int h )
 {
 	glViewport( 0, 0, w, h );
+	p.perspective( 90.0f, w/(float)h, 0.01f, 1000.0f );
+}
+
+void ExampleApplication::onKeyDown( unsigned char key, int mouseX, int mouseY )
+{
+	switch( key )
+	{
+	case 'w':
+		z -= 0.1f;
+		break;
+	case 's':
+		z += 0.1f;
+		break;
+	}
+
+	glutPostRedisplay();
 }
 
 void ExampleApplication::render()
 {
+	mv.push();
+
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+	mv.translate( 0.0f, 0.0f, z );
 	
 	GLint mvpLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "mvp" );
 	if( mvpLocation == -1 )
 		assert( false );
-	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, stack.top().getAsArray() );
+	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, pipeline.getMVPMatrix() );
 
 	vbo->draw( GL_TRIANGLE_FAN );
 	glutSwapBuffers();
+	
+	mv.pop();
 }
 
