@@ -1,9 +1,10 @@
 #include "TGAFile.h"
 #include <fstream>
 
+
 TGAFile::TGAFile()
 {
-	buffer = NULL;
+	image = NULL;
 }
 
 TGAFile::~TGAFile()
@@ -55,7 +56,8 @@ void TGAFile::clear()
 {
 	if( f.is_open() )
 		f.close();
-	delete[] buffer;
+	delete image;
+	image = NULL;
 }
 
 bool TGAFile::readHeader()
@@ -100,15 +102,19 @@ bool TGAFile::readImage()
 {
 	unsigned char bytesPerPixel = header.bitsPerPixel / 8;
 	unsigned long len = bytesPerPixel * header.height * header.width;
-	buffer = (void*)new char[ len ];
-	f.read( (char*)buffer, len );
+
+	if( image != NULL )
+		delete image;
+	image = new Image( header.height, header.width, header.bitsPerPixel );
+	image->createBuffer();
+	f.read( (char*)image->getBuffer(), len );
 
 	if( f.good() )
 		return true;
 	else
 	{
-		delete[] buffer;
-		buffer = NULL;
+		delete image;
+		image = NULL;
 		return false;
 	}
 }

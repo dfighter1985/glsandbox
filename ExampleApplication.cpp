@@ -10,6 +10,7 @@
 #include "Frustum.h"
 #include "TransformPipeline.h"
 #include "ExampleApplication.h"
+#include "TGAFile.h"
 
 GLfloat vertices[] =
 {
@@ -51,6 +52,9 @@ void ExampleApplication::setup()
 	mv.translate( 0.0f, 0.0f, -0.5f );
 
 	pipeline.setup( &mv, &p );
+
+	TGAFile f;
+	f.load( "opengl.tga" );
 }
 
 void ExampleApplication::onResizeWindow( int w, int h )
