@@ -1,22 +1,12 @@
-#include "ShaderManager.h"
-
-#include <windows.h>
-
 #ifndef GLEW_STATIC
 #define GLEW_STATIC
 #endif
-
 #include <gl/glew.h>
 #include <gl/gl.h>		
-
-#ifndef FREEGLUT_STATIC
-#define FREEGLUT_STATIC
-#endif
-#include <GL/glut.h>
-
-#include "VertexBuffer.h"
 #include <fstream>
 #include <iostream>
+#include "ShaderManager.h"
+#include "VertexBuffer.h"
 
 ShaderManager::ShaderManager()
 {

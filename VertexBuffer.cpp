@@ -1,20 +1,16 @@
-#include "VertexBuffer.h"
-
-#include <windows.h>
-
 #ifndef GLEW_STATIC
 #define GLEW_STATIC
 #endif
-
-#include <gl/glew.h>
-#include <gl/gl.h>
-
 #ifndef FREEGLUT_STATIC
 #define FREEGLUT_STATIC
 #endif
+
+#include <gl/glew.h>
+#include <gl/gl.h>		
 #include <GL/glut.h>
 
 #include <cassert>
+#include "VertexBuffer.h"
 
 VertexBuffer::VertexBuffer()
 {
