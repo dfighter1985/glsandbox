@@ -11,19 +11,29 @@
 #include "TransformPipeline.h"
 #include "ExampleApplication.h"
 #include "TGAFile.h"
+#include "Texture.h"
 
 GLfloat vertices[] =
 {
+	-0.5f, 0.5f, 0.0f,
 	-0.5f, -0.5f, 0.0f,
 	0.5f, -0.5f, 0.0f,
-	0.5f, 0.5f, 0.0f,
-	-0.5f, 0.5f, 0.0f
+	0.5f, 0.5f, 0.0f
+};
+
+GLfloat texCoords[] =
+{
+	0.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, 1.0f,
+	1.0f, 0.0f
 };
 
 ShaderManager shaderManager;
 MatrixStack mv;
 Frustum p;
 TransformPipeline pipeline;
+Texture texture;
 
 ExampleApplication::ExampleApplication()
 {
@@ -43,10 +53,12 @@ void ExampleApplication::setup()
 	glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
 	
 	vbo = new VertexBuffer();
-	vbo->buffer( 4, vertices, NULL, NULL );
+	vbo->buffer( 4, vertices, texCoords, NULL );
 
-	shaderManager.loadShaderFiles( "red", "shaders/red_trans.vp", "shaders/red.fp" );
-	shaderManager.useProgram( "red" );
+	bool ok = shaderManager.loadShaderFiles( "tex", "shaders/tex.vp", "shaders/tex.fp" );
+	assert( ok );
+
+	shaderManager.useProgram( "tex" );
 
 	mv.loadIdentity();
 	mv.translate( 0.0f, 0.0f, -0.5f );
@@ -54,7 +66,12 @@ void ExampleApplication::setup()
 	pipeline.setup( &mv, &p );
 
 	TGAFile f;
-	f.load( "opengl.tga" );
+	ok = f.load( "opengl.tga" );
+	if( !ok )
+		assert( false );
+
+	texture.bind( 0 );
+	texture.loadImage( *f.getImage() );
 }
 
 void ExampleApplication::onResizeWindow( int w, int h )
@@ -83,11 +100,16 @@ void ExampleApplication::render()
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	mv.push();
 	mv.translate( 0.0f, 0.0f, z );
+
+	texture.bind( 0 );
 	
 	GLint mvpLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "mvp" );
-	if( mvpLocation == -1 )
-		assert( false );
+	assert( mvpLocation != -1 );
+	GLint samplerLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "sampler" );
+	assert( samplerLocation != -1 );
+
 	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, pipeline.getMVPMatrix() );
+	glUniform1ui( samplerLocation, 0 );
 
 	vbo->draw( GL_TRIANGLE_FAN );
 

@@ -15,7 +15,6 @@
 VertexBuffer::VertexBuffer()
 {
 	size = 0;
-
 	GLuint Ids[ 3 ];
 
 	glGenBuffers( 3, Ids );
@@ -84,14 +83,14 @@ void VertexBuffer::draw( unsigned int primitive )
 	{
 		glBindBuffer( GL_ARRAY_BUFFER, tId );
 		glEnableVertexAttribArray( 1 );
-		glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+		glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, 0 );
 	}
 
 	if( nBuffered )
 	{
 		glBindBuffer( GL_ARRAY_BUFFER, nId );
 		glEnableVertexAttribArray( 2 );
-		glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+		glVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 0, 0 );
 	}
 
 	glDrawArrays( primitive, 0, size );

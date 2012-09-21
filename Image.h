@@ -1,6 +1,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include <cstdio>  // needed because of NULL
+
 class Image
 {
 public:
