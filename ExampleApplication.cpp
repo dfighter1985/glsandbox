@@ -15,10 +15,18 @@
 
 GLfloat vertices[] =
 {
-	-0.5f, 0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-	0.5f, 0.5f, 0.0f
+	-0.5f, 1.0f, 0.0f,
+	-0.5f, 0.0f, 0.0f,
+	0.5f, 0.0f, 0.0f,
+	0.5f, 1.0f, 0.0f
+};
+
+GLfloat floorVertices[] =
+{
+	-20.0f, 0.0f, -20.0f,
+	-20.0f, 0.0f, 20.0f,
+	20.0f, 0.0f, 20.0f,
+	20.0f, 0.0f, -20.0f
 };
 
 GLfloat texCoords[] =
@@ -29,15 +37,25 @@ GLfloat texCoords[] =
 	1.0f, 0.0f
 };
 
+GLfloat floorTexCoords[] =
+{
+	0.0f, 0.0f,
+	0.0f, 20.0f,
+	20.0f, 20.0f,
+	20.0f, 0.0f
+};
+
 ShaderManager shaderManager;
 MatrixStack mv;
 Frustum p;
 TransformPipeline pipeline;
-Texture texture;
 
 ExampleApplication::ExampleApplication()
 {
 	vbo = NULL;
+	floorVBO = NULL;
+	texture = NULL;
+	floorTexture = NULL;
 	z = 0.0f;
 }
 
@@ -45,6 +63,12 @@ ExampleApplication::~ExampleApplication()
 {
 	delete vbo;
 	vbo = NULL;
+	delete floorVBO;
+	floorVBO = NULL;
+	delete texture;
+	texture = NULL;
+	delete floorTexture;
+	floorTexture = NULL;
 }
 
 void ExampleApplication::setup()
@@ -55,23 +79,34 @@ void ExampleApplication::setup()
 	vbo = new VertexBuffer();
 	vbo->buffer( 4, vertices, texCoords, NULL );
 
+	floorVBO = new VertexBuffer();
+	floorVBO->buffer( 4, floorVertices, floorTexCoords, NULL );
+
 	bool ok = shaderManager.loadShaderFiles( "tex", "shaders/tex.vp", "shaders/tex.fp" );
 	assert( ok );
 
 	shaderManager.useProgram( "tex" );
 
 	mv.loadIdentity();
-	mv.translate( 0.0f, 0.0f, -0.5f );
+	mv.translate( 0.0f, -0.5f, -0.5f );
 
 	pipeline.setup( &mv, &p );
 
 	TGAFile f;
 	ok = f.load( "opengl.tga" );
-	if( !ok )
-		assert( false );
+	assert( ok );
 
-	texture.bind( 0 );
-	texture.loadImage( *f.getImage() );
+	texture = new Texture();
+	texture->bind( 0 );
+	texture->loadImage( *f.getImage() );
+
+	f.clear();
+	ok = f.load( "floor.tga" );
+	assert( ok );
+
+	floorTexture = new Texture();
+	floorTexture->bind( 0 );
+	floorTexture->loadImage( *f.getImage() );
 }
 
 void ExampleApplication::onResizeWindow( int w, int h )
@@ -101,16 +136,18 @@ void ExampleApplication::render()
 	mv.push();
 	mv.translate( 0.0f, 0.0f, z );
 
-	texture.bind( 0 );
-	
 	GLint mvpLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "mvp" );
 	assert( mvpLocation != -1 );
 	GLint samplerLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "sampler" );
 	assert( samplerLocation != -1 );
 
 	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, pipeline.getMVPMatrix() );
-	glUniform1ui( samplerLocation, 0 );
+	glUniform1i( samplerLocation, 0 );
 
+	floorTexture->bind( 0 );
+	floorVBO->draw( GL_TRIANGLE_FAN );
+
+	texture->bind( 0 );
 	vbo->draw( GL_TRIANGLE_FAN );
 
 	mv.pop();

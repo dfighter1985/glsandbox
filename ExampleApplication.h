@@ -4,6 +4,7 @@
 #include "GLUTApplication.h"
 
 class VertexBuffer;
+class Texture;
 
 class ExampleApplication : public GLUTApplication
 {
@@ -17,6 +18,9 @@ public:
 
 private:
 	VertexBuffer *vbo;
+	VertexBuffer *floorVBO;
+	Texture *texture;
+	Texture *floorTexture;
 	float z;
 };
 
