@@ -18,6 +18,7 @@ private:
 	unsigned int vId;
 	unsigned int tId;
 	unsigned int nId;
+	unsigned int vao;
 	unsigned long size;
 };
 
