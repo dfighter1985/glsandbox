@@ -179,6 +179,7 @@ bool ShaderManager::useProgram( const char *programName )
 		return false;
 	
 	glUseProgram( itr->second );
+	currentProgramId = itr->second;
 	return true;
 }
 
