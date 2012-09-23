@@ -7,9 +7,8 @@ class Texture
 {
 public:
 	Texture();
-	~Texture();
-	void bind( unsigned int unit );
-	void loadImage( Image &image );
+	virtual ~Texture();
+	virtual void bind( unsigned int unit ){}
 	unsigned int getId() const{ return Id; }
 
 private:

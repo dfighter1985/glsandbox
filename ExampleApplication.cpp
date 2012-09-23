@@ -11,15 +11,8 @@
 #include "TransformPipeline.h"
 #include "ExampleApplication.h"
 #include "TGAFile.h"
-#include "Texture.h"
-
-GLfloat vertices[] =
-{
-	-0.5f, 1.0f, 0.0f,
-	-0.5f, 0.0f, 0.0f,
-	0.5f, 0.0f, 0.0f,
-	0.5f, 1.0f, 0.0f
-};
+#include "Texture2D.h"
+#include "CubeMapTexture.h"
 
 GLfloat floorVertices[] =
 {
@@ -27,14 +20,6 @@ GLfloat floorVertices[] =
 	-20.0f, 0.0f, 20.0f,
 	20.0f, 0.0f, 20.0f,
 	20.0f, 0.0f, -20.0f
-};
-
-GLfloat texCoords[] =
-{
-	0.0f, 0.0f,
-	0.0f, 1.0f,
-	1.0f, 1.0f,
-	1.0f, 0.0f
 };
 
 GLfloat floorTexCoords[] =
@@ -45,6 +30,98 @@ GLfloat floorTexCoords[] =
 	20.0f, 0.0f
 };
 
+GLfloat boxTexCoords[] =
+{
+	//front
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f,
+
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f,
+
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f,
+
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f,
+
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f,
+
+	0.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f
+};
+
+GLfloat boxVertices[] =
+{
+	// front
+	-0.5f, 1.0f, 0.0f,
+	-0.5f, 0.0f, 0.0f,
+	0.5f, 0.0f, 0.0f,
+	0.5f, 0.0f, 0.0f,
+	0.5f, 1.0f, 0.0f,
+	-0.5f, 1.0f, 0.0f,
+	//back
+	-0.5f, 1.0f, -1.0f,
+	-0.5f, 0.0f, -1.0f,
+	0.5f, 0.0f, -1.0f,
+	0.5f, 0.0f, -1.0f,
+	0.5f, 1.0f, -1.0f,
+	-0.5f, 1.0f, -1.0f,
+	// left
+	-0.5f, 1.0f, -1.0f,
+	-0.5f, 0.0f, -1.0f,
+	-0.5f, 0.0f, 0.0f,
+	-0.5f, 0.0f, 0.0f,
+	-0.5f, 1.0f, 0.0f,
+	-0.5f, 1.0f, -1.0f,
+	// right
+	0.5f, 1.0f, -1.0f,
+	0.5f, 0.0f, -1.0f,
+	0.5f, 0.0f, 0.0f,
+	0.5f, 0.0f, 0.0f,
+	0.5f, 1.0f, 0.0f,
+	0.5f, 1.0f, -1.0f,
+	// top
+	-0.5f, 1.0f, -1.0f,
+	-0.5f, 1.0f, 0.0f,
+	0.5f, 1.0f, 0.0f,
+	0.5f, 1.0f, 0.0f,
+	0.5f, 1.0f, -1.0f,
+	-0.5f, 1.0f, -1.0f,
+	// bottom
+	-0.5f, 0.0f, -1.0f,
+	-0.5f, 0.0f, 0.0f,
+	0.5f, 0.0f, 0.0f,
+	0.5f, 0.0f, 0.0f,
+	0.5f, 0.0f, -1.0f,
+	-0.5f, 0.0f, -1.0f
+};
+
 ShaderManager shaderManager;
 MatrixStack mv;
 Frustum p;
@@ -52,21 +129,23 @@ TransformPipeline pipeline;
 
 ExampleApplication::ExampleApplication()
 {
-	vbo = NULL;
+	boxVBO = NULL;
 	floorVBO = NULL;
-	texture = NULL;
+	boxTexture = NULL;
 	floorTexture = NULL;
 	z = 0.0f;
+	x = 0.0f;
+	yRot = 0.0f;
 }
 
 ExampleApplication::~ExampleApplication()
 {
-	delete vbo;
-	vbo = NULL;
+	delete boxVBO;
+	boxVBO = NULL;
 	delete floorVBO;
 	floorVBO = NULL;
-	delete texture;
-	texture = NULL;
+	delete boxTexture;
+	boxTexture = NULL;
 	delete floorTexture;
 	floorTexture = NULL;
 }
@@ -76,8 +155,8 @@ void ExampleApplication::setup()
 	glEnable( GL_DEPTH_TEST );
 	glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
 	
-	vbo = new VertexBuffer();
-	vbo->buffer( 4, vertices, texCoords, NULL );
+	boxVBO = new VertexBuffer();
+	boxVBO->buffer(  36, boxVertices, boxTexCoords, NULL  );
 
 	floorVBO = new VertexBuffer();
 	floorVBO->buffer( 4, floorVertices, floorTexCoords, NULL );
@@ -93,18 +172,18 @@ void ExampleApplication::setup()
 	pipeline.setup( &mv, &p );
 
 	TGAFile f;
-	ok = f.load( "opengl.tga" );
+	ok = f.load( "wood.tga" );
 	assert( ok );
 
-	texture = new Texture();
-	texture->bind( 0 );
-	texture->loadImage( *f.getImage() );
+	boxTexture = new Texture2D();
+	boxTexture->bind( 0 );
+	boxTexture->loadImage( *f.getImage() );
 
 	f.clear();
 	ok = f.load( "floor.tga" );
 	assert( ok );
 
-	floorTexture = new Texture();
+	floorTexture = new Texture2D();
 	floorTexture->bind( 0 );
 	floorTexture->loadImage( *f.getImage() );
 }
@@ -120,10 +199,22 @@ void ExampleApplication::onKeyDown( unsigned char key, int mouseX, int mouseY )
 	switch( key )
 	{
 	case 'w':
-		z -= 0.1f;
+		z += 0.1f;
 		break;
 	case 's':
-		z += 0.1f;
+		z -= 0.1f;
+		break;
+	case 'q':
+		x += 0.1f;
+		break;
+	case 'e':
+		x -= 0.1f;
+		break;
+	case 'a':
+		yRot += 5.0f;
+		break;
+	case 'd':
+		yRot -= 5.0f;
 		break;
 	}
 
@@ -134,21 +225,22 @@ void ExampleApplication::render()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	mv.push();
-	mv.translate( 0.0f, 0.0f, z );
+	mv.rotate( yRot, 0.0f, 1.0f, 0.0f );
+	mv.translate( x, 0.0f, z );
 
+	shaderManager.useProgram( "tex" );
 	GLint mvpLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "mvp" );
 	assert( mvpLocation != -1 );
 	GLint samplerLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "sampler" );
 	assert( samplerLocation != -1 );
-
 	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, pipeline.getMVPMatrix() );
 	glUniform1i( samplerLocation, 0 );
 
 	floorTexture->bind( 0 );
 	floorVBO->draw( GL_TRIANGLE_FAN );
 
-	texture->bind( 0 );
-	vbo->draw( GL_TRIANGLE_FAN );
+	boxTexture->bind( 0 );
+	boxVBO->draw();
 
 	mv.pop();
 	swapBuffers();
