@@ -10,5 +10,8 @@ out vec4 fragmentColor;
 
 void main( void )
 {
-	fragmentColor = luminosity * texture( sampler, texCoords );
+	float ambience = 0.3;
+	vec4 diffcolor = vec4( 0.3, 0.0, 0.0, 0.3 );
+	vec4 texel     = texture( sampler, texCoords );
+	fragmentColor  = luminosity * ( diffcolor * texel ) + ambience  * texel;
 }

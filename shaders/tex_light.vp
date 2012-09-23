@@ -19,15 +19,10 @@ float getDiffuse( void )
 	return angle;
 }
 
-float getAmbient( void )
-{
-	return 0.3;
-}
-
 void main( void )
 {
 	gl_Position  = mvp * vertex;
 	texCoords    = inTexCoords;
-	luminosity   = getAmbient() + getDiffuse();
+	luminosity   = getDiffuse();
 }
 
