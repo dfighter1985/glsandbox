@@ -287,10 +287,13 @@ void ExampleApplication::render()
 	assert( samplerLocation != -1 );
 	GLint lightPositionLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "lightPosition" );
 	assert( lightPositionLocation != -1 );
+	GLint lightPositionLocation2 = glGetUniformLocation( shaderManager.getCurrentProgramId(), "lightPosition2" );
+	assert( lightPositionLocation2 != -1 );
 
 	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, pipeline.getMVPMatrix() );
 	glUniform1i( samplerLocation, 0 );
 	glUniform3f( lightPositionLocation, -100.0f, 100.0f, 100.0f );
+	glUniform3f( lightPositionLocation2, 100.0f, 0.0f, -100.0f );
 
 	floorTexture->bind( 0 );
 	floorVBO->draw( GL_TRIANGLE_FAN );
