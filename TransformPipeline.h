@@ -38,10 +38,24 @@ public:
 		return m.getAsArray();
 	}
 
+	const float* getNormalMatrix()
+	{
+		normalMatrix.loadIdentity();
+		float v[ 4 ];
+
+		for( int i = 0; i < 3; i++ )
+		{
+			mv->top().getColumn( i, v );
+			normalMatrix.setColumn( i, v );
+		}
+		return normalMatrix.getAsArray();
+	}
+
 private:
 	MatrixStack *mv;
 	Frustum  *p;
 	Matrix44  m;
+	Matrix44  normalMatrix;
 };
 
 #endif

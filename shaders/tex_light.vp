@@ -1,0 +1,33 @@
+#version 330
+
+uniform mat4 mvp;
+uniform vec3 lightPosition;
+
+layout ( location = 0 ) in vec4 vertex;
+layout ( location = 1 ) in vec2 inTexCoords;
+layout ( location = 2 ) in vec4 normal;
+
+smooth out vec2 texCoords;
+smooth out float luminosity;
+
+float getDiffuse( void )
+{
+	vec3 vertex3        = vertex.xyz / vertex.w;
+	vec3 normal3        = normal.xyz / normal.w;
+	vec3 lightDirection = normalize( lightPosition - vertex3 );
+	float angle         = max( 0.0, dot( normal3, lightDirection ) );
+	return angle;
+}
+
+float getAmbient( void )
+{
+	return 0.3;
+}
+
+void main( void )
+{
+	gl_Position  = mvp * vertex;
+	texCoords    = inTexCoords;
+	luminosity   = getAmbient() + getDiffuse();
+}
+

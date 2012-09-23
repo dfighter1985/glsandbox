@@ -52,6 +52,15 @@ public:
 			m[ i ] = v[ i - column*4 ];
 	}
 
+	void getColumn( int column, float *v ) const
+	{
+		if( column > 3 )
+			return;
+
+		for( int i = column*4; i < column*4+4; i++ )
+			v[ i - column*4 ] = m[ i ];
+	}
+
 	void add( const Matrix44& other )
 	{
 		const float *f = other.getAsArray();

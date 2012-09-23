@@ -22,6 +22,14 @@ GLfloat floorVertices[] =
 	20.0f, 0.0f, -20.0f
 };
 
+GLfloat floorNormals[] =
+{
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f
+};
+
 GLfloat floorTexCoords[] =
 {
 	0.0f, 0.0f,
@@ -204,12 +212,12 @@ void ExampleApplication::setup()
 	boxVBO->buffer(  36, boxVertices, boxTexCoords, boxNormals  );
 
 	floorVBO = new VertexBuffer();
-	floorVBO->buffer( 4, floorVertices, floorTexCoords, NULL );
+	floorVBO->buffer( 4, floorVertices, floorTexCoords, floorNormals );
 
-	bool ok = shaderManager.loadShaderFiles( "tex", "shaders/tex.vp", "shaders/tex.fp" );
+	bool ok = shaderManager.loadShaderFiles( "tex_light", "shaders/tex_light.vp", "shaders/tex_light.fp" );
 	assert( ok );
 
-	shaderManager.useProgram( "tex" );
+	shaderManager.useProgram( "tex_light" );
 
 	mv.loadIdentity();
 	mv.translate( 0.0f, -0.5f, -0.5f );
@@ -273,13 +281,16 @@ void ExampleApplication::render()
 	mv.rotate( yRot, 0.0f, 1.0f, 0.0f );
 	mv.translate( x, 0.0f, z );
 
-	shaderManager.useProgram( "tex" );
 	GLint mvpLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "mvp" );
 	assert( mvpLocation != -1 );
 	GLint samplerLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "sampler" );
 	assert( samplerLocation != -1 );
+	GLint lightPositionLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "lightPosition" );
+	assert( lightPositionLocation != -1 );
+
 	glUniformMatrix4fv( mvpLocation, 1, GL_FALSE, pipeline.getMVPMatrix() );
 	glUniform1i( samplerLocation, 0 );
+	glUniform3f( lightPositionLocation, -100.0f, 100.0f, 100.0f );
 
 	floorTexture->bind( 0 );
 	floorVBO->draw( GL_TRIANGLE_FAN );
