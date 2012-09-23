@@ -32,7 +32,7 @@ VertexBuffer::VertexBuffer()
 	glBindBuffer( GL_ARRAY_BUFFER, tId );
 	glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, nId );
-	glVertexAttribPointer( 3, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+	glVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 0, 0 );
 
 	glBindVertexArray( 0 );
 
@@ -69,7 +69,7 @@ void VertexBuffer::buffer( unsigned long nVertices, void *vertices, void *texCoo
 
 	if( normals != NULL )
 	{
-		glBindBuffer( GL_ARRAY_BUFFER, tId );
+		glBindBuffer( GL_ARRAY_BUFFER, nId );
 		glBufferData( GL_ARRAY_BUFFER, nVertices * 3 * sizeof( GLfloat ), normals, GL_STATIC_DRAW );
 		nBuffered = true;
 	}

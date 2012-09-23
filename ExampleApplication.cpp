@@ -122,6 +122,51 @@ GLfloat boxVertices[] =
 	-0.5f, 0.0f, -1.0f
 };
 
+GLfloat boxNormals[] =
+{
+	0.0f, 0.0f, 1.0f,
+	0.0f, 0.0f, 1.0f,
+	0.0f, 0.0f, 1.0f,
+	0.0f, 0.0f, 1.0f,
+	0.0f, 0.0f, 1.0f,
+	0.0f, 0.0f, 1.0f,
+
+	0.0f, 0.0f, -1.0f,
+	0.0f, 0.0f, -1.0f,
+	0.0f, 0.0f, -1.0f,
+	0.0f, 0.0f, -1.0f,
+	0.0f, 0.0f, -1.0f,
+	0.0f, 0.0f, -1.0f,
+
+	-1.0f, 0.0f, 0.0f,
+	-1.0f, 0.0f, 0.0f,
+	-1.0f, 0.0f, 0.0f,
+	-1.0f, 0.0f, 0.0f,
+	-1.0f, 0.0f, 0.0f,
+	-1.0f, 0.0f, 0.0f,
+
+	1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f,
+
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+
+	0.0f, -1.0f, 0.0f,
+	0.0f, -1.0f, 0.0f,
+	0.0f, -1.0f, 0.0f,
+	0.0f, -1.0f, 0.0f,
+	0.0f, -1.0f, 0.0f,
+	0.0f, -1.0f, 0.0f
+};
+
 ShaderManager shaderManager;
 MatrixStack mv;
 Frustum p;
@@ -156,7 +201,7 @@ void ExampleApplication::setup()
 	glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
 	
 	boxVBO = new VertexBuffer();
-	boxVBO->buffer(  36, boxVertices, boxTexCoords, NULL  );
+	boxVBO->buffer(  36, boxVertices, boxTexCoords, boxNormals  );
 
 	floorVBO = new VertexBuffer();
 	floorVBO->buffer( 4, floorVertices, floorTexCoords, NULL );
