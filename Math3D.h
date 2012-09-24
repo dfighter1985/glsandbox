@@ -33,4 +33,16 @@ inline Vector4 mulMatrix44Vector4( const Matrix44 &m, const Vector4 &v )
 	return Vector4( xyzw[ 0 ], xyzw[ 1 ], xyzw[ 2 ] );
 }
 
+const float PI = 3.14159f;
+
+inline float toRadian( float angle )
+{
+	return PI / 180.0f * angle;
+}
+
+inline float toAngle( float radian )
+{
+	return radian * 180.0f / PI;
+}
+
 #endif

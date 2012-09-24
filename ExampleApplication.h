@@ -22,8 +22,9 @@ private:
 	VertexBuffer *boxVBO;
 	Texture2D *boxTexture;
 	Texture2D *floorTexture;
-	float z;
 	float x;
+	float y;
+	float z;
 	float yRot;
 };
 

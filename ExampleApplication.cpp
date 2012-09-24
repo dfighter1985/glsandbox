@@ -186,8 +186,9 @@ ExampleApplication::ExampleApplication()
 	floorVBO = NULL;
 	boxTexture = NULL;
 	floorTexture = NULL;
-	z = 0.0f;
 	x = 0.0f;
+	y = 0.0f;
+	z = 0.0f;
 	yRot = 0.0f;
 }
 
@@ -252,22 +253,38 @@ void ExampleApplication::onKeyDown( unsigned char key, int mouseX, int mouseY )
 	switch( key )
 	{
 	case 'w':
-		z += 0.1f;
+		z += ( 0.1f * cos( toRadian( yRot ) ) );
+		x -= ( 0.1f * sin( toRadian( yRot ) ) );
 		break;
 	case 's':
-		z -= 0.1f;
+		z -= ( 0.1f * cos( toRadian( yRot ) ) );
+		x += ( 0.1f * sin( toRadian( yRot ) ) );
 		break;
 	case 'q':
-		x += 0.1f;
+		z += ( 0.1f * cos( toRadian( yRot - 90 ) ) );
+		x -= ( 0.1f * sin( toRadian( yRot - 90 ) ) );
 		break;
 	case 'e':
-		x -= 0.1f;
-		break;
-	case 'a':
-		yRot += 5.0f;
+		z += ( 0.1f * cos( toRadian( yRot + 90 ) ) );
+		x -= ( 0.1f * sin( toRadian( yRot + 90 ) ) );
 		break;
 	case 'd':
+		yRot += 5.0f;
+		if( ( yRot > 359.5f ) && ( yRot < 360.5f ) )
+			yRot = 0.0f;
+		break;
+	case 'a':
 		yRot -= 5.0f;
+		if( ( yRot < -359.5f ) && ( yRot > -360.5f ) )
+			yRot = 0.0f;
+		break;
+
+	case 'c':
+		y += 0.1f;
+		break;
+
+	case 'x':
+		y -= 0.1f;
 		break;
 	}
 
@@ -278,8 +295,8 @@ void ExampleApplication::render()
 {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	mv.push();
+	mv.translate( x, y, z );
 	mv.rotate( yRot, 0.0f, 1.0f, 0.0f );
-	mv.translate( x, 0.0f, z );
 
 	GLint mvpLocation = glGetUniformLocation( shaderManager.getCurrentProgramId(), "mvp" );
 	assert( mvpLocation != -1 );
